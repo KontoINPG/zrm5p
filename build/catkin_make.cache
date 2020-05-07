@@ -1,0 +1,2 @@
+.
+-DCATKIN_DEVEL_PREFIX=/home/dmw/zrm5p/devel -DCMAKE_INSTALL_PREFIX=/home/dmw/zrm5p/install -G Unix Makefiles
