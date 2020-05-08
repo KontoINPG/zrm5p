@@ -1,0 +1,5 @@
+dodany generator plynacego pradu, uruchomienie:
+rosrun learning_actionlib current_generator -2
+
+-2 oznacza zadany prad
+
