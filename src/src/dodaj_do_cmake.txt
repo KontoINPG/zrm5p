@@ -1,0 +1,2 @@
+add_executable(current_generator src/current_generator.cpp)
+target_link_libraries(current_generator ${catkin_LIBRARIES})
