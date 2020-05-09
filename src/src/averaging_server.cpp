@@ -16,7 +16,7 @@ public:
     as_.registerPreemptCallback(boost::bind(&AveragingAction::preemptCB, this));
 
     //subscribe to the data topic of interest
-    sub_ = nh_.subscribe("/random_number", 1, &AveragingAction::analysisCB, this);
+    sub_ = nh_.subscribe("actualCurrent", 1, &AveragingAction::analysisCB, this);
     as_.start();
   }
 
@@ -34,7 +34,14 @@ public:
     goal_ = as_.acceptNewGoal()->samples;
   }
 
-  void preemptCB()
+  /*void preemptCB()
+  {
+    ROS_INFO("%s: Preempted", action_name_.c_str());
+    // set the action state to preempted
+    as_.setPreempted();
+  }
+*/
+void preemptCB()
   {
     ROS_INFO("%s: Preempted", action_name_.c_str());
     // set the action state to preempted
@@ -46,7 +53,16 @@ public:
     // make sure that the action hasn't been canceled
     if (!as_.isActive())
       return;
-    
+	
+	if(status != "awaria_OverCurrent") {
+		if (msg->data == 0) status = "ok";   
+		if (msg->data < 0) status = "rozladowanie";
+		if (msg->data > 0) status = "ladowanie";
+		if (msg->data > charge_limit) status= "awaria_OverCurrent";
+		if (msg->data < discharge_limit) status= "awaria_OverCurrent";
+	}
+	
+	feedback_.status = status;
     data_count_++;
     feedback_.sample = data_count_;
     feedback_.data = msg->data;
@@ -82,8 +98,9 @@ protected:
   ros::NodeHandle nh_;
   actionlib::SimpleActionServer<learning_actionlib::AveragingAction> as_;
   std::string action_name_;
+std::string status;
   int data_count_, goal_;
-  float sum_, sum_sq_;
+  float sum_, sum_sq_, charge_limit=5, discharge_limit=10;
   learning_actionlib::AveragingFeedback feedback_;
   learning_actionlib::AveragingResult result_;
   ros::Subscriber sub_;
