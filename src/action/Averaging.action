@@ -4,8 +4,10 @@ int32 result_chooser
 #result definition
 float32 mean
 float32 std_dev
+
 ---
 #feedback
 float32 SOC_percent
 float32 SOC_mAh
+string status
 
