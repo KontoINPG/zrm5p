@@ -1,12 +1,11 @@
 #goal definition
-int32 samples
+int32 result_chooser
 ---
 #result definition
 float32 mean
 float32 std_dev
 ---
 #feedback
-int32 sample
-float32 data
-float32 mean
-float32 std_dev
+float32 SOC_percent
+float32 SOC_mAh
+
