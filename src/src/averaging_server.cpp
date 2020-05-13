@@ -86,22 +86,31 @@ discharge_limit_over = 0;
       feedback_.SOC_mAh = SOC_mAh;
 
 
-  
 
 
-	if(status != "awaria_OverCurrent") {
+	if(status != "awaria_OverCurrent") {		// if status is "fail", latch until reset occur
 		if (msg->data == 0) status = "ok";
 		if (msg->data < 0) status = "rozladowanie";
 		if (msg->data > 0) status = "ladowanie";
 		if (msg->data > charge_limit) status= "awaria_OverCurrent";
 		if (msg->data < discharge_limit) status= "awaria_OverCurrent";
 	}
+	ROS_WARN_STREAM(status);
 
-	feedback_.status = status;
 
 
-    as_.publishFeedback(feedback_);
+	if(goal_ == 5) status = "ok";	// if request nr is 5 (status reset), set status to ok
+	
+	if(goal_ == 4) feedback_.status = status; // if request nr is 5, update actual battery status
+	
+	as_.publishFeedback(feedback_);
+
+
+
+
+
 /*
+
 
 
     data_count_++;
