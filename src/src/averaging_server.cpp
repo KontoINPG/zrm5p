@@ -70,21 +70,24 @@ void preemptCB()
       feedback_.SOC_mAh = SOC_mAh;
 
 
-      as_.publishFeedback(feedback_);
-/*
+      
 
 
-	if(status != "awaria_OverCurrent") {
+
+	if(status != "awaria_OverCurrent") {		// if status is "fail", latch until reset occur
 		if (msg->data == 0) status = "ok";
 		if (msg->data < 0) status = "rozladowanie";
 		if (msg->data > 0) status = "ladowanie";
 		if (msg->data > charge_limit) status= "awaria_OverCurrent";
 		if (msg->data < discharge_limit) status= "awaria_OverCurrent";
 	}
+	ROS_WARN_STREAM(status);
 
+	if(goal_ == 5) status = "ok";	// if request nr is 5 (status reset), set status to ok
+	
 	feedback_.status = status;
-
-
+	as_.publishFeedback(feedback_);
+/*
 
 
 
@@ -136,7 +139,7 @@ protected:
   std::string action_name_;
 std::string status;
   int data_count_, goal_;
-  float sum_, sum_sq_, charge_limit=5, discharge_limit=10;
+  float sum_, sum_sq_, charge_limit=5, discharge_limit=-10;
   learning_actionlib::AveragingFeedback feedback_;
   learning_actionlib::AveragingResult result_;
   ros::Subscriber sub_;
