@@ -85,7 +85,8 @@ void preemptCB()
 
 	if(goal_ == 5) status = "ok";	// if request nr is 5 (status reset), set status to ok
 	
-	feedback_.status = status;
+	if(goal_ == 4) feedback_.status = status; // if request nr is 5, update actual battery status
+	
 	as_.publishFeedback(feedback_);
 /*
 
