@@ -59,6 +59,22 @@ void preemptCB()
 
       current_actual = msg->data;
 
+      if(current_actual > charge_limit)
+{
+charge_limit_over = 1;
+}else{
+charge_limit_over = 0;
+}
+
+     if(current_actual < discharge_limit)
+{
+discharge_limit_over = 1;
+}else{
+discharge_limit_over = 0;
+}
+
+
+
       charge_actual += current_actual/36000;
 
       SOC_mAh = charge_actual;
@@ -70,8 +86,7 @@ void preemptCB()
       feedback_.SOC_mAh = SOC_mAh;
 
 
-      as_.publishFeedback(feedback_);
-/*
+  
 
 
 	if(status != "awaria_OverCurrent") {
@@ -85,7 +100,8 @@ void preemptCB()
 	feedback_.status = status;
 
 
-
+    as_.publishFeedback(feedback_);
+/*
 
 
     data_count_++;
@@ -128,6 +144,9 @@ protected:
   float SOC_percent = 0;
   float SOC_mAh = 0;
   float current_actual = 0;
+float discharge_limit_over = 0;
+float charge_limit_over = 0;
+
 
 
 
@@ -136,7 +155,7 @@ protected:
   std::string action_name_;
 std::string status;
   int data_count_, goal_;
-  float sum_, sum_sq_, charge_limit=5, discharge_limit=10;
+  float sum_, sum_sq_, charge_limit=5, discharge_limit=-10;
   learning_actionlib::AveragingFeedback feedback_;
   learning_actionlib::AveragingResult result_;
   ros::Subscriber sub_;
