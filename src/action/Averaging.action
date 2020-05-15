@@ -2,8 +2,8 @@
 int32 result_chooser
 ---
 #result definition
-float32 mean
-float32 std_dev
+float32 timefull
+float32 timeempty
 
 ---
 #feedback

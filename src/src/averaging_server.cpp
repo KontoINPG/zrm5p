@@ -98,11 +98,33 @@ discharge_limit_over = 0;
 	ROS_WARN_STREAM(status);
 
 
+        if(goal_ >= 100)
+	{
+		int samples = goal_ - 100;
 
+	sum += current_actual;
+	sampleNr ++;
+if(sampleNr == samples)
+{
+	sampleNr = 0;
+	mean = sum/samples;
+	
+	if(mean >= 0)
+		result_.timefull = ((100-SOC_percent)*charge_max)/mean;
+
+
+	if(mean < 0)
+		result_.timeempty = ((SOC_percent)*charge_max)/mean;
+
+as_.setSucceeded(result_);
+}
+}
+		
 	if(goal_ == 5) status = "ok";	// if request nr is 5 (status reset), set status to ok
 	
-	if(goal_ == 4) feedback_.status = status; // if request nr is 5, update actual battery status
+	//if(goal_ == 4) feedback_.status = status; // if request nr is 4, update actual battery status
 	
+        feedback_.status = status; 
 	as_.publishFeedback(feedback_);
 
 
@@ -164,7 +186,7 @@ float charge_limit_over = 0;
   std::string action_name_;
 std::string status;
   int data_count_, goal_;
-  float sum_, sum_sq_, charge_limit=5, discharge_limit=-10;
+  float sum, mean, sampleNr, sum_sq_, charge_limit=5, discharge_limit=-10;
   learning_actionlib::AveragingFeedback feedback_;
   learning_actionlib::AveragingResult result_;
   ros::Subscriber sub_;
